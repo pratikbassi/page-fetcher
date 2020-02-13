@@ -10,12 +10,17 @@ let file = input[0];
 
 const readWebsite = () => {
   request(html, (error, response, body) => {
-    //console.log('error:', error); // Print the error if one occurred
+
+    console.log('error:', error); // Print the error if one occurred
+    if(error !== null){
+      process.exit();
+    }
   
-    //console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+    console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
     
     fs.writeFile(file, body); // Print the HTML for the Google homepage.
     console.log(`Wrote ${body.length} bytes to ${file}`);
+    if(body.length > 0)
   });
 }
 let response = '';
@@ -28,13 +33,20 @@ fs.exists(file, (exists) => {
   })
   data.question('Do you want to proceed? File already exists. Type Y to continue and N to cancel', (answer) => {
     response = answer;
-  
-
     if(response === 'Y'){
       readWebsite();
     } else{
       console.log('CANCELLED');
+      process.exit();
     }
+    
   })}
-  else{readWebsite()};
+  else{
+
+    console.log('FILE DOES NOT EXIST, CREATING NEW ONE')
+
+    readWebsite();
+    
+
+  };
 })
